@@ -6,8 +6,11 @@ const userSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
+
     addUser: (state, action) => {
-      state.push(action.payload);
+      state.push(action.payload)
+   // localStorage.setItem("userDetails", state);
+      //localStorage.setItem('userDetails',state.push(action.payload));  
     },
     editUser: (state, action) => {
       const { id, name, email } = action.payload;
@@ -28,6 +31,22 @@ const userSlice = createSlice({
 
 
 });
+//MIDDLEWARE
+export const localStorageMiddleware = ({ getState }) => {
+  return next => action => {
+    const result = next(action);
+    localStorage.setItem('applicationState', JSON.stringify(getState()));
+    return result;
+  };
+};
+
+export const reHydrateStore = () => {
+  if (localStorage.getItem('applicationState') !== null) {
+    return JSON.parse(localStorage.getItem('applicationState')); // re-hydrate the store
+  }
+};
 
 export const { addUser, editUser, deleteUser } = userSlice.actions;
 export default userSlice.reducer;
+// export default localStorageMiddleware,reHydrateStore;
+
